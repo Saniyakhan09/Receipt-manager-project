@@ -1,0 +1,44 @@
+.page1 {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #432534;
+  color: white;
+  text-align: center;
+  padding: 40px;
+}
+
+.heading {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  max-width: 800px;
+  margin-bottom: 80px;
+  color: #fff;
+}
+
+.highlight {
+  color: #ffcc00; 
+  font-weight: 700;
+}
+
+.get-started-btn {
+  position: fixed;
+  background-color: white;
+  bottom: 50px;
+  display: flex;
+  color: #432534;
+  border: none;
+  padding: 14px 80px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.get-started-btn:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-3px);
+}
