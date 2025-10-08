@@ -4,7 +4,9 @@
   padding: 20px;
   font-family: Arial, sans-serif;
 }
-
+.all-receipts-container li p{
+  color: #000;
+}
 /* Tabs */
 .tabs {
   display: flex;
@@ -198,11 +200,13 @@
 .receipt-number{
    font-size: 0.85rem;
   color: #000;
-  font-weight: 600;
+  font-weight: 700;
   margin: 3px 0 0;
 }
-.receipt-info {
+.receipt-info  {
   flex: 1;
+    color: #333;
+
 }
 
 .receipt-title {

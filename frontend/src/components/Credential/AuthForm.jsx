@@ -49,6 +49,9 @@ const navigate = useNavigate();
       
       if(res.ok){
         localStorage.setItem("username", username);
+        localStorage.setItem("userId", data.userId);
+         localStorage.setItem("token", data.token);
+         console.log("Login successful");
         navigate("/page")
       }
     } 

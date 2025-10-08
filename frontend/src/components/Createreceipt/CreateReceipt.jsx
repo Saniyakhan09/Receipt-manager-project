@@ -1,165 +1,162 @@
+import React, { useState } from 'react';
 
-
-import React, { useState } from "react";
-import Select from "react-select";
-
-function CreateReceipt() {
-  const [formData, setFormData] = useState({
-    ReceiptNumber: "",
-    date: "",
-    amount: "",
-    status: null, 
-    category: "",
-    description: ""
+const CreateReceipt = () => {
+  const [receiptData, setReceiptData] = useState({
+    ReceiptNumber: '',
+    date: '',
+    category: '',
+    amount: '',
+    status: '',
+    image: null,
   });
-
-  const [save, setSave] = useState("Save");
-  const [file, setFile] = useState(null);
+const [submitButton,setsubmitButton] = useState('save')
+const [file, setFile] = useState(null);
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token');
+   
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const { name, value, files } = e.target;
+    setReceiptData(prevState => ({
+      ...prevState,
+      [name]: files ? files[0] : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSave("Saved")
-     setFormData({
-          ReceiptNumber: "",
-          date: "",
-          amount: "",
-          status: null, 
-          category: "",
-          description: ""
-        });
-        setFile(null);
-        document.querySelector('input[type="file"]').value = "";
-
-    const formDataToSend = new FormData();
-    Object.keys(formData).forEach((key) =>
-      formDataToSend.append(key, formData[key] || "")
-    );
-
-    if (file) {
-      formDataToSend.append("image", file);
+    if (!token || !userId) {
+      console.error('Token or UserId missing:', { token, userId });
+      alert('Please log in first');
+      return;
     }
+      setsubmitButton('saving...')
+
+    
+
+    const formData = new FormData();
+    formData.append('ReceiptNumber', receiptData.ReceiptNumber);
+    formData.append('date', receiptData.date);
+    formData.append('category', receiptData.category);
+    formData.append('amount', receiptData.amount);
+    formData.append('status', receiptData.status);
+    formData.append('image', receiptData.image);
+    formData.append('user', userId);
 
     try {
-      const res = await fetch("http://localhost:3000/receipt/create", {
-        method: "POST",
-        body: formDataToSend,
+      const response = await fetch('http://localhost:3000/receipt/create', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        credentials: 'include',
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
-       
-       
-
-        console.log(data);
-
-        setTimeout(() => setSave("Save"), 1500);
-      } else {
-        alert("Error: " + data.error);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create receipt');
       }
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong!");
+
+      const data = await response.json();
+      console.log('Response:', data);
+    } catch (error) {
+      console.error('Error creating receipt:', error.message);
     }
+
+          setsubmitButton('saved')
+           setReceiptData({
+ ReceiptNumber: '',
+    date: '',
+    category: '',
+    amount: '',
+    status: '',
+    image: null,
+      })
+      setFile(null); document.querySelector('input[type="file"]').value = "";
+       setTimeout(() => {
+        setsubmitButton('Save');
+      }, 1000);
+
   };
 
-  const options = [
-    { value: "Paid", label: "Paid" },
-    { value: "Unpaid", label: "Unpaid" },
-    { value: "Pending", label: "Pending" },
-  ];
-
+  
   return (
-    <div className="receipt-container">
-      <h2 className="form-title">Review Receipt</h2>
-
-      <form className="receipt-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Receipt Number*</label>
+    <div className='receipt-container' >
+      <h2 className='form-heading'>Create Receipt</h2>
+      <form className='receipt-form' onSubmit={handleSubmit}>
+        <div className='form-group'>
+          <label className='form-title'>Receipt Number</label>
           <input
             type="text"
             name="ReceiptNumber"
-            value={formData.ReceiptNumber}
+            value={receiptData.ReceiptNumber}
             onChange={handleChange}
             required
           />
         </div>
-
-        <div className="form-group">
-          <label>Total Amount*</label>
+        <div  className='form-group'>
+          <label  className='form-title'>Total Amount</label>
           <input
             type="number"
             name="amount"
-            value={formData.amount}
+            value={receiptData.amount}
             onChange={handleChange}
             required
           />
         </div>
-
-        <div className="form-group">
-          <label>Category</label>
+        <div  className='form-group'>
+          <label className='form-title'>Category</label>
           <input
             type="text"
             name="category"
-            value={formData.category}
-            placeholder="Meals / Travel etc."
+            placeholder=''
+            value={receiptData.category}
             onChange={handleChange}
+            
           />
         </div>
-
-        <div className="form-group">
-          <label>Date*</label>
+        <div  className='form-group'>
+          <label className='form-title'>Date</label>
           <input
             type="date"
             name="date"
-            value={formData.date}
+            value={receiptData.date}
             onChange={handleChange}
             required
           />
         </div>
-
-        <div className="form-group">
-          <label>Status*</label>
-          <Select
+        <div className='form-group '>
+          <label    className='form-title'>Status</label>
+          <select
             name="status"
-            className="custom-select"
-            options={options}
-            value={options.find((opt) => opt.value === formData.status) || null} // 👈 Corrected
-            onChange={(selected) =>
-              setFormData({ ...formData, status: selected ? selected.value : null })
-            }
-            isClearable 
-          />
-        </div>
+            value={receiptData.status}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Status</option>
+            <option value="paid">Paid</option>
+            <option value="pending">Pending</option>
+                        <option value="unpaid">Unpaid</option>
 
-        <div className="form-group">
-          <label>Upload Image</label>
+          </select>
+        </div>
+        <div  className='form-group'>
+          <label className='form-title'>Upload Image:</label>
           <input
             type="file"
             name="image"
+            onChange={handleChange}
             accept="image/*"
-            onChange={handleFileChange}
-            required
           />
         </div>
-
-        <button className="savebtn" type="submit">
-          {save}
+        <button type="submit" className='savebtn'>
+          {submitButton}
         </button>
       </form>
+    
     </div>
   );
-}
+};
 
 export default CreateReceipt;

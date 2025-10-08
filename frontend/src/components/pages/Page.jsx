@@ -4,6 +4,8 @@ import "./Page.css"
 
 const Page = () => {
   const username = localStorage.getItem("username")
+    const userId = localStorage.getItem("userId")
+
   const navigate = useNavigate()
   return (
     <div className="page-container">
@@ -18,7 +20,7 @@ const Page = () => {
         </button>
         <button 
           className="btn" 
-          onClick={() => navigate("/AllReceipt")}
+          onClick={() => navigate(`/AllReceipt`)}
         >
           VIEW ALL RECEIPTS
         </button>

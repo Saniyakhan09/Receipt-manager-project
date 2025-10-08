@@ -23,7 +23,7 @@ const AuthRoutes = () => {
         <Route path="/Authform" element={<Authform/>} />
         <Route path="/page" element={<Page/>}/>
         <Route path='/CreateReceipt' element={<CreateReceipt/>}/>
-        <Route path="/AllReceipt" element={<Allreceipt/>}/>
+        <Route path="/AllReceipt/" element={<Allreceipt/>}/>
         <Route path='/totalexpensive' element={<Totalexpense/>}/>
         {/* <Route path='/receipts' element ={<Receipts/>}/> */}
     </Routes>
